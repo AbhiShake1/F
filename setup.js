@@ -20,7 +20,7 @@ export async function setup({ cloak = false, docling = false } = {}) {
     // pipx handles PEP 668 (Homebrew Python blocks system-wide pip)
     const hasPipx = spawnSync('which', ['pipx'], { encoding: 'utf8' }).status === 0
     if (!hasPipx) spawnSync('brew', ['install', 'pipx'], { stdio: 'inherit' })
-    spawnSync('pipx', ['install', 'docling'], { stdio: 'inherit' })
+    spawnSync('pipx', ['install', 'docling', '--include-deps'], { stdio: 'inherit' })
     return
   }
 
