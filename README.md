@@ -45,6 +45,7 @@ Windows: `irm https://raw.githubusercontent.com/AbhiShake1/F/main/uninstall.ps1 
 | curl.md | URL → markdown | https://github.com/wevm/curl.md |
 | RTK | Output compression | https://github.com/rtk-ai/rtk |
 | ripgrep | File content + filename search | https://github.com/BurntSushi/ripgrep |
+| pandoc | DOCX, PPTX, EPUB, ODT → markdown | https://github.com/jgm/pandoc |
 | docling | Document parsing — PDF, DOCX, etc. (opt-in) | https://github.com/docling-project/docling |
 | CloakBrowser | Bypass blocked sites (opt-in) | https://github.com/CloakHQ/CloakBrowser |
 
@@ -80,13 +81,15 @@ Then exits. Auto-running setup silently hides failures and wastes time. Explicit
 
 ### Heavy opt-ins: docling and CloakBrowser
 
+**pandoc is a core dependency** — installed by `F -s` alongside ripgrep and curl.md. It handles DOCX, PPTX, EPUB, ODT → markdown with no extra steps.
+
 Some capabilities require large downloads and are not installed by `F -s`. Both follow the same pattern: install once when needed, visible output so you see progress.
 
-**Document parsing** (PDF, DOCX, PPTX, XLSX, EPUB):
+**Document parsing fallback** (PDF, XLSX, and pandoc failures):
 ```sh
 F -s docling
 ```
-When a doc file is passed without docling installed, F prints:
+When a doc file requires docling and it is not installed, F prints:
 ```
 missing: docling not installed. run: F -s docling
 ```
