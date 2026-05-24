@@ -106,7 +106,7 @@ Detection runs in this order:
 ## Usage
 
 ```
-F <file|url|string|...>
+F <file|url|string>
 ```
 
 ```bash

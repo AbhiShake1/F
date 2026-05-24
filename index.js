@@ -8,7 +8,7 @@ import { setup } from './setup.js'
 const args = process.argv.slice(2)
 
 if (args.length === 0) {
-  process.stdout.write('F <file|url|string|...>\n')
+  process.stdout.write('F <file|url|string>\n')
   process.exit(0)
 }
 
