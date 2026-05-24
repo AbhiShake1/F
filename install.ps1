@@ -9,7 +9,7 @@ if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
 $installDir = "$env:USERPROFILE\.F\src"
 New-Item -ItemType Directory -Force -Path $installDir | Out-Null
 $baseUrl = "https://raw.githubusercontent.com/AbhiShake1/F/main"
-foreach ($f in @("index.js", "detect.js", "frecency.js", "fetch.js", "read.js", "search.js", "setup.js")) {
+foreach ($f in @("index.js", "detect.js", "frecency.js", "fetch.js", "read.js", "search.js", "setup.js", "cloak_fetch.js")) {
     Invoke-WebRequest -Uri "$baseUrl/$f" -OutFile "$installDir\$f" -UseBasicParsing
 }
 

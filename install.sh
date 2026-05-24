@@ -15,7 +15,7 @@ fi
 INSTALL_DIR="$HOME/.F/src"
 mkdir -p "$INSTALL_DIR"
 BASE_URL="https://raw.githubusercontent.com/AbhiShake1/F/main"
-for f in index.js detect.js frecency.js fetch.js read.js search.js setup.js; do
+for f in index.js detect.js frecency.js fetch.js read.js search.js setup.js cloak_fetch.js; do
   curl -fsSL "$BASE_URL/$f" -o "$INSTALL_DIR/$f"
 done
 
