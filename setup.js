@@ -29,6 +29,7 @@ export async function setup({ cloak = false, docling = false } = {}) {
     ['npm', ['install', '-g', 'curl.md']],
     ['brew', ['install', 'rtk']],
     ['brew', ['install', 'ripgrep']],
+    ['brew', ['install', 'pandoc']],
     ['npm', ['install', '--prefix', fDir, '@pspdfkit/pdf-to-markdown']],
   ]) {
     spawnSync(cmd, args, { stdio: 'pipe' })
