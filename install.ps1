@@ -23,4 +23,4 @@ if ($userPath -notlike "*$newDir*") {
     Write-Host "Added $newDir to PATH. Restart your terminal."
 }
 
-Write-Host "F installed. Run: F setup"
+Write-Host "F installed. Run: F -s"

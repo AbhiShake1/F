@@ -17,7 +17,7 @@ const arg = args[0]
 async function main() {
   try {
     // setup commands
-    if (arg === 'setup') {
+    if (arg === '-s') {
       const cloak = args[1] === 'cloak-browser'
       await setup(cloak)
       return
@@ -44,7 +44,7 @@ async function main() {
   } catch (err) {
     const msg = err && err.message ? err.message : String(err)
     if (msg.includes('blocked')) {
-      process.stderr.write('blocked. `F setup cloak-browser` to bypass\n')
+      process.stderr.write('blocked. `F -s cloak-browser` to bypass\n')
       process.exit(1)
     }
     if (msg.startsWith('missing:')) {

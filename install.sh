@@ -33,7 +33,7 @@ fi
 
 chmod +x "$BIN_PATH"
 
-echo "F installed. Run: F setup"
+echo "F installed. Run: F -s"
 if [ -n "$LOCAL_BIN" ]; then
   echo "Add \$HOME/.local/bin to PATH if not already there."
 fi

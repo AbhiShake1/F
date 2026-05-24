@@ -10,7 +10,7 @@ function runMd(url) {
   const result = spawnSync('md', [url], { encoding: 'utf8', maxBuffer: 10 * 1024 * 1024 })
   if (result.error) {
     if (result.error.code === 'ENOENT') {
-      throw new Error('missing: curl.md not installed. run: F setup')
+      throw new Error('missing: curl.md not installed. run: F -s')
     }
     throw result.error
   }

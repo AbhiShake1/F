@@ -29,7 +29,7 @@ irm https://raw.githubusercontent.com/AbhiShake1/F/main/install.ps1 | iex
 Then install F's dependencies:
 
 ```sh
-F setup
+F -s
 ```
 
 **Uninstall**
@@ -56,30 +56,34 @@ Frecency algorithm adapted from [zoxide](https://github.com/ajeetdsouza/zoxide).
 
 Flags consume tokens. `--flag` = 1 token. Every flag on every call compounds across thousands of agent invocations. Argument shape encodes intent: a URL looks like a URL, a file path looks like a path, everything else is a search. No ambiguity, no flags required.
 
-### `F setup` not shown in help text
+### `-s` is the one exception
 
-Setup runs once per machine. Displaying it in help output on every invocation wastes tokens for every agent and human that calls `F --help`. It lives here. Documented decision.
+`F -s` runs the dependency installer. This is the only flag F accepts, and it exists for one reason: `setup` is a real word that users legitimately search for in codebases. `F setup` would collide with content search. `-s` is unambiguous — no file is named `-s`, no search query starts with it.
 
-### `F setup` suppresses all output
+### `F -s` not shown in help text
 
-When an AI agent runs `F setup`, install logs pollute the context window with dozens of lines the agent does not need. All install output is suppressed. Success = silence. Failure = non-zero exit; re-run manually.
+Setup runs once per machine. Displaying it in help output on every invocation wastes tokens for every agent and human that runs `F`. It lives here. Documented decision.
+
+### `F -s` suppresses all output
+
+When an AI agent runs `F -s`, install logs pollute the context window with dozens of lines the agent does not need. All install output is suppressed. Success = silence. Failure = non-zero exit; re-run manually.
 
 ### Missing dependency: tell user, don't auto-install
 
 If a dependency is missing mid-run, F prints:
 
 ```
-missing: <tool>. run: F setup
+missing: <tool>. run: F -s
 ```
 
 Then exits. Auto-running setup silently hides failures and wastes time. Explicit is better.
 
-### CloakBrowser is opt-in via `F setup cloak-browser`
+### CloakBrowser is opt-in via `F -s cloak-browser`
 
-The binary is large. Most users never need it. `F setup` installs the four core tools only. `F setup cloak-browser` adds bypass capability. When a site blocks a request, F prints:
+The binary is large. Most users never need it. `F -s` installs the four core tools only. `F -s cloak-browser` adds bypass capability. When a site blocks a request, F prints:
 
 ```
-blocked. `F setup cloak-browser` to bypass
+blocked. `F -s cloak-browser` to bypass
 ```
 
 ### Frecency algorithm (from zoxide)
@@ -118,18 +122,18 @@ F "auth middleware"    # search across all files
 Some sites block automated fetching. F handles this:
 
 ```
-blocked. `F setup cloak-browser` to bypass
+blocked. `F -s cloak-browser` to bypass
 ```
 
-Install CloakBrowser once with `F setup cloak-browser` and F will use it automatically on blocked sites.
+Install CloakBrowser once with `F -s cloak-browser` and F will use it automatically on blocked sites.
 
 ## Development
 
 ```sh
 git clone https://github.com/AbhiShake1/F
 cd F
-node index.js           # run directly
-node --test test/*.test.js  # run tests
+node index.js                       # run directly
+node --test test/*.test.js          # run tests
 ```
 
 ## License

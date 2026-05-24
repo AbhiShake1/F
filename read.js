@@ -30,7 +30,7 @@ export function readFile(filePath) {
       maxBuffer: 10 * 1024 * 1024
     })
     if (result.error && result.error.code === 'ENOENT') {
-      throw new Error('missing: docling not installed. run: F setup')
+      throw new Error('missing: docling not installed. run: F -s')
     }
     if (result.error) throw result.error
     content = result.stdout || ''

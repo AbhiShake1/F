@@ -53,7 +53,7 @@ describe('searchContent: ripgrep content search', () => {
     )
   })
 
-  test('missing: error message says to run F setup', () => {
+  test('missing: error message says to run F -s', () => {
     if (RG_AVAILABLE) {
       assert.ok(true, 'skipping — rg available')
       return
@@ -62,7 +62,7 @@ describe('searchContent: ripgrep content search', () => {
     assert.throws(
       () => searchContent('test'),
       (err) => {
-        assert.ok(err.message.includes('F setup'))
+        assert.ok(err.message.includes('F -s'))
         return true
       }
     )
@@ -287,7 +287,7 @@ describe('searchContent: PATH manipulation to simulate missing rg', () => {
         (err) => {
           assert.ok(err instanceof Error)
           // On macOS/Linux, ENOENT is thrown when binary not found
-          // The function wraps it as 'missing: ripgrep not installed. run: F setup'
+          // The function wraps it as 'missing: ripgrep not installed. run: F -s'
           assert.ok(
             err.message.startsWith('missing:') || err.code === 'ENOENT',
             `expected missing: error, got: ${err.message}`

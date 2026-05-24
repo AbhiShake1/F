@@ -83,7 +83,7 @@ describe('fetchUrl: missing md binary', () => {
     if (MD_AVAILABLE) {
       // md IS installed — can't test this path without mocking
       // We'll verify the behavior description is correct by checking the source
-      // (whitebox): the error message is 'missing: curl.md not installed. run: F setup'
+      // (whitebox): the error message is 'missing: curl.md not installed. run: F -s'
       assert.ok(true, 'md is available; skipping missing-binary test')
       return
     }

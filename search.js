@@ -11,7 +11,7 @@ export function searchContent(query) {
   })
 
   if (result.error && result.error.code === 'ENOENT') {
-    throw new Error('missing: ripgrep not installed. run: F setup')
+    throw new Error('missing: ripgrep not installed. run: F -s')
   }
 
   // rg exits 1 when no matches — that's fine, return empty
@@ -29,7 +29,7 @@ export function searchFilename(name) {
   })
 
   if (result.error && result.error.code === 'ENOENT') {
-    throw new Error('missing: ripgrep not installed. run: F setup')
+    throw new Error('missing: ripgrep not installed. run: F -s')
   }
 
   if (!result.stdout) return []
