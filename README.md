@@ -32,11 +32,17 @@ Then install F's dependencies:
 F -s
 ```
 
-**Uninstall**
+## Uninstall
 
-macOS/Linux: `curl -fsSL https://raw.githubusercontent.com/AbhiShake1/F/main/uninstall.sh | sh`
+**macOS / Linux**
+```sh
+curl -fsSL https://raw.githubusercontent.com/AbhiShake1/F/main/uninstall.sh | sh
+```
 
-Windows: `irm https://raw.githubusercontent.com/AbhiShake1/F/main/uninstall.ps1 | iex`
+**Windows** (PowerShell)
+```powershell
+irm https://raw.githubusercontent.com/AbhiShake1/F/main/uninstall.ps1 | iex
+```
 
 ## Delegates to
 
