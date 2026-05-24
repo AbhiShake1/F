@@ -81,14 +81,27 @@ describe('530: unreachable origin', () => {
 // ── Blocked detection ─────────────────────────────────────────────────────────
 describe('blocked: active anti-scraping responses', () => {
   const blockedCases = [
-    ['403 in error table',    mkTable('FETCH_FAILED', 'Upstream returned 403')],
-    ['429 in error table',    mkTable('FETCH_FAILED', 'Upstream returned 429')],
-    ['Access Denied',         mkTable('FETCH_FAILED', 'Access Denied')],
-    ['Forbidden',             mkTable('FETCH_FAILED', 'Forbidden')],
-    ['access denied lc',     mkTable('FETCH_FAILED', 'access denied')],
-    ['blocked by in table',  mkTable('FETCH_FAILED', 'blocked by firewall')],
-    ['403 in page body',     '# Page\n\n403 Forbidden\n\nGet out.'],
-    ['Access Denied in body','<h1>Access Denied</h1>'],
+    // Hard HTTP errors via curl.md table
+    ['403 in error table',              mkTable('FETCH_FAILED', 'Upstream returned 403')],
+    ['429 in error table',              mkTable('FETCH_FAILED', 'Upstream returned 429')],
+    ['Access Denied in table',          mkTable('FETCH_FAILED', 'Access Denied')],
+    ['Forbidden in table',              mkTable('FETCH_FAILED', 'Forbidden')],
+    ['access denied lc in table',       mkTable('FETCH_FAILED', 'access denied')],
+    ['blocked by in table',             mkTable('FETCH_FAILED', 'blocked by firewall')],
+    // Hard HTTP in page body
+    ['403 in page body',                '# Page\n\n403 Forbidden\n\nGet out.'],
+    ['Access Denied in body',           '<h1>Access Denied</h1>'],
+    // Distil Networks / Imperva soft-block (HTTP 200)
+    ['Pardon Our Interruption',         '# Pardon Our Interruption\n\nAs you were browsing...'],
+    ['pardon our interruption lc',      '# pardon our interruption\n\nbot detected'],
+    ['we think you were a bot',         '# Page\n\nyour browser made us think you were a bot'],
+    // Cloudflare JS challenge (HTTP 200)
+    ['Cloudflare JS challenge',         '# Just a moment...\n\nEnable JavaScript and cookies to continue'],
+    ['Enable JS and cookies',           'Enable JavaScript and cookies to continue'],
+    ['Verifying you are human',         '## Verifying you are human. This may take a few seconds.'],
+    ['Please enable Cookies',           'Please enable Cookies and reload the page'],
+    // DataDome
+    ['DataDome dd_referrer',            '<input type="hidden" name="dd_referrer" value="...">'],
   ]
 
   for (const [label, response] of blockedCases) {

@@ -7,8 +7,24 @@ function parseCurlMdError(output) {
   return msg ? msg[1].trim() : 'fetch failed'
 }
 
-// 4xx/5xx signals that mean the site is actively blocking scrapers
-const BLOCK_SIGNALS = ['403', '429', 'Access Denied', 'blocked by', 'Forbidden', 'access denied']
+// Hard HTTP errors and soft bot-challenge page signals
+const BLOCK_SIGNALS = [
+  // HTTP status codes in curl.md error tables
+  '403', '429',
+  // Standard HTTP denial phrases
+  'Access Denied', 'access denied', 'Forbidden', 'blocked by',
+  // Distil Networks / Imperva bot challenge (HTTP 200 soft block)
+  'Pardon Our Interruption', 'pardon our interruption',
+  'your browser made us think you were a bot',
+  'we think you were a bot',
+  // Cloudflare JS/CAPTCHA challenges (HTTP 200 soft block)
+  'Enable JavaScript and cookies to continue',
+  'Verifying you are human',
+  'Just a moment',
+  'Please enable Cookies and reload the page',
+  // DataDome
+  'dd_referrer',
+]
 
 function isBlocked(output) {
   return BLOCK_SIGNALS.some(s => output.includes(s))
