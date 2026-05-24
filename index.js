@@ -45,14 +45,13 @@ async function main() {
     const msg = err && err.message ? err.message : String(err)
     if (msg.includes('blocked')) {
       process.stderr.write('blocked. `F -s cloak-browser` to bypass\n')
-      process.exit(1)
-    }
-    if (msg.startsWith('missing:')) {
+    } else if (msg.startsWith('missing:')) {
       process.stderr.write(msg + '\n')
-      process.exit(1)
+    } else {
+      // Compress upstream errors to bare minimum: strip "Upstream returned", lowercase
+      const short = msg.replace(/upstream returned\s*/i, '').trim().toLowerCase()
+      process.stderr.write(short + '\n')
     }
-    // General error
-    process.stderr.write(msg + '\n')
     process.exit(1)
   }
 }

@@ -1,12 +1,10 @@
 import { spawnSync } from 'child_process'
 
-// curl.md returns a JSON error object on failure: { code, message }
+// curl.md returns errors as a markdown table: | code | FETCH_FAILED | / | message | ... |
 function parseCurlMdError(output) {
-  try {
-    const j = JSON.parse(output.trim())
-    if (j && j.code) return j
-  } catch {}
-  return null
+  if (!output.includes('FETCH_FAILED') && !output.includes('| code')) return null
+  const msg = output.match(/\|\s*message\s*\|\s*([^|]+)\|/)
+  return msg ? msg[1].trim() : 'fetch failed'
 }
 
 // 4xx/5xx signals that mean the site is actively blocking scrapers
@@ -26,15 +24,10 @@ function runMd(url) {
   }
   const stdout = result.stdout || ''
 
-  // curl.md signals failure via a JSON error object in stdout
-  const err = parseCurlMdError(stdout)
-  if (err) {
-    const msg = err.message || ''
-    // 530 = Cloudflare origin DNS error — site unreachable, not blocked
-    if (msg.includes('530')) throw new Error('unreachable: ' + url + ' (origin DNS error)')
-    // Other upstream errors that indicate active blocking
-    if (isBlocked(msg) || isBlocked(stdout)) throw new Error('blocked')
-    throw new Error('fetch failed: ' + msg)
+  const curlErr = parseCurlMdError(stdout)
+  if (curlErr) {
+    if (isBlocked(curlErr) || isBlocked(stdout)) throw new Error('blocked')
+    throw new Error(curlErr)
   }
 
   return { stdout, status: result.status }
