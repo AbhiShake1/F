@@ -5,26 +5,23 @@ import { spawnSync } from 'child_process'
 import { update } from './frecency.js'
 
 const DOC_EXTENSIONS = new Set(['.pdf', '.docx', '.pptx', '.xlsx', '.epub', '.odt', '.html', '.htm'])
-const PDF_BIN = path.join(os.homedir(), '.F', 'node_modules', '.bin', 'pdf-to-markdown')
 
 function isRtkAvailable() {
   return spawnSync('which', ['rtk'], { encoding: 'utf8' }).status === 0
 }
 
+function findBin(name) {
+  const local = path.join(os.homedir(), '.F', 'node_modules', '.bin', name)
+  if (fs.existsSync(local)) return local
+  const r = spawnSync('which', [name], { encoding: 'utf8' })
+  return r.status === 0 ? name : null
+}
+
 function readPdf(absPath) {
-  // Primary: pdf-to-markdown (fast native binary, installed via F -s)
-  if (fs.existsSync(PDF_BIN)) {
-    const tmpOut = path.join(os.tmpdir(), `F_pdf_${Date.now()}.md`)
-    try {
-      const r = spawnSync(PDF_BIN, [absPath, tmpOut], { encoding: 'utf8' })
-      if (r.status === 0 && fs.existsSync(tmpOut)) {
-        const content = fs.readFileSync(tmpOut, 'utf8')
-        fs.unlinkSync(tmpOut)
-        return content
-      }
-    } finally {
-      try { fs.unlinkSync(tmpOut) } catch {}
-    }
+  const bin = findBin('pdf-to-markdown')
+  if (bin) {
+    const r = spawnSync(bin, [absPath], { encoding: 'utf8', maxBuffer: 20 * 1024 * 1024 })
+    if (r.status === 0 && r.stdout) return r.stdout
   }
 
   // Fallback: docling
