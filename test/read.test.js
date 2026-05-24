@@ -7,7 +7,6 @@ import {
 } from 'node:fs'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
-import { spawnSync } from 'node:child_process'
 
 // Set HOME to temp dir BEFORE importing read.js (which imports frecency.js)
 const testHome = mkdtempSync(join(tmpdir(), 'F-read-test-'))
