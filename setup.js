@@ -3,13 +3,6 @@ import { existsSync } from 'node:fs'
 import { join } from 'node:path'
 import { homedir } from 'node:os'
 
-function pip(args, opts = {}) {
-  // try pip3 first, fall back to pip
-  for (const cmd of ['pip3', 'pip']) {
-    const r = spawnSync(cmd, args, { ...opts, encoding: 'utf8' })
-    if (!r.error) return r
-  }
-}
 
 export async function setup({ cloak = false, docling = false } = {}) {
   const fDir = join(homedir(), '.F')
