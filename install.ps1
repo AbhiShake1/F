@@ -9,8 +9,10 @@ if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
 $installDir = "$env:USERPROFILE\.F\src"
 New-Item -ItemType Directory -Force -Path $installDir | Out-Null
 $baseUrl = "https://raw.githubusercontent.com/AbhiShake1/F/main"
+$ts = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
+$headers = @{ 'Cache-Control' = 'no-cache, no-store'; 'Pragma' = 'no-cache' }
 foreach ($f in @("index.js", "detect.js", "frecency.js", "fetch.js", "read.js", "search.js", "setup.js", "cloak_fetch.js")) {
-    Invoke-WebRequest -Uri "$baseUrl/$f" -OutFile "$installDir\$f" -UseBasicParsing
+    Invoke-WebRequest -Uri "$baseUrl/$f`?_=$ts" -OutFile "$installDir\$f" -UseBasicParsing -Headers $headers
 }
 
 # Write wrapper
