@@ -22,14 +22,15 @@ done
 WRAPPER='#!/bin/sh
 exec node "$HOME/.F/src/index.js" "$@"'
 
-BIN_PATH="/usr/local/bin/F"
 LOCAL_BIN=""
-if ! printf '%s\n' "$WRAPPER" > "$BIN_PATH" 2>/dev/null; then
+if [ -w /usr/local/bin ]; then
+  BIN_PATH="/usr/local/bin/F"
+else
   LOCAL_BIN="$HOME/.local/bin"
   mkdir -p "$LOCAL_BIN"
   BIN_PATH="$LOCAL_BIN/F"
-  printf '%s\n' "$WRAPPER" > "$BIN_PATH"
 fi
+printf '%s\n' "$WRAPPER" > "$BIN_PATH"
 
 chmod +x "$BIN_PATH"
 
