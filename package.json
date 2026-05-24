@@ -1,0 +1,9 @@
+{
+  "name": "f-cli",
+  "version": "0.1.0",
+  "description": "fetch find search — no flags, token efficient",
+  "main": "index.js",
+  "bin": { "F": "./index.js" },
+  "type": "module",
+  "license": "MIT"
+}
