@@ -1,5 +1,15 @@
 import { spawnSync } from 'child_process'
 
+// curl.md returns a JSON error object on failure: { code, message }
+function parseCurlMdError(output) {
+  try {
+    const j = JSON.parse(output.trim())
+    if (j && j.code) return j
+  } catch {}
+  return null
+}
+
+// 4xx/5xx signals that mean the site is actively blocking scrapers
 const BLOCK_SIGNALS = ['403', '429', 'Access Denied', 'blocked by', 'Forbidden', 'access denied']
 
 function isBlocked(output) {
@@ -14,26 +24,38 @@ function runMd(url) {
     }
     throw result.error
   }
-  return { stdout: result.stdout || '', status: result.status }
+  const stdout = result.stdout || ''
+
+  // curl.md signals failure via a JSON error object in stdout
+  const err = parseCurlMdError(stdout)
+  if (err) {
+    const msg = err.message || ''
+    // 530 = Cloudflare origin DNS error — site unreachable, not blocked
+    if (msg.includes('530')) throw new Error('unreachable: ' + url + ' (origin DNS error)')
+    // Other upstream errors that indicate active blocking
+    if (isBlocked(msg) || isBlocked(stdout)) throw new Error('blocked')
+    throw new Error('fetch failed: ' + msg)
+  }
+
+  return { stdout, status: result.status }
 }
 
 /**
  * fetchUrl(url) → string
  */
 export async function fetchUrl(url) {
-  // Normalize: prepend https:// if no scheme
   let normalizedUrl = url
   if (!url.startsWith('http://') && !url.startsWith('https://')) {
     normalizedUrl = 'https://' + url
   }
 
-  // Try primary URL
   let result
   try {
     result = runMd(normalizedUrl)
   } catch (err) {
     if (err.message && err.message.startsWith('missing:')) throw err
-    // Connection error on https → retry with http
+    if (err.message && err.message.startsWith('unreachable:')) throw err
+    // Connection error or blocked on https → retry with http
     if (normalizedUrl.startsWith('https://')) {
       const httpUrl = 'http://' + normalizedUrl.slice(8)
       result = runMd(httpUrl)
@@ -43,7 +65,6 @@ export async function fetchUrl(url) {
   }
 
   if (isBlocked(result.stdout)) {
-    // If was https, retry with http
     if (normalizedUrl.startsWith('https://')) {
       const httpUrl = 'http://' + normalizedUrl.slice(8)
       let retryResult
@@ -52,9 +73,7 @@ export async function fetchUrl(url) {
       } catch {
         throw new Error('blocked')
       }
-      if (isBlocked(retryResult.stdout)) {
-        throw new Error('blocked')
-      }
+      if (isBlocked(retryResult.stdout)) throw new Error('blocked')
       return retryResult.stdout
     }
     throw new Error('blocked')
