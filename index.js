@@ -18,8 +18,7 @@ async function main() {
   try {
     // setup commands
     if (arg === '-s') {
-      const cloak = args[1] === 'cloak-browser'
-      await setup(cloak)
+      await setup({ cloak: args[1] === 'cloak-browser', docling: args[1] === 'docling' })
       return
     }
 

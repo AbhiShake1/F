@@ -45,7 +45,7 @@ Windows: `irm https://raw.githubusercontent.com/AbhiShake1/F/main/uninstall.ps1 
 | curl.md | URL → markdown | https://github.com/wevm/curl.md |
 | RTK | Output compression | https://github.com/rtk-ai/rtk |
 | ripgrep | File content + filename search | https://github.com/BurntSushi/ripgrep |
-| docling | Document parsing (PDF, DOCX, etc.) | https://github.com/docling-project/docling |
+| docling | Document parsing — PDF, DOCX, etc. (opt-in) | https://github.com/docling-project/docling |
 | CloakBrowser | Bypass blocked sites (opt-in) | https://github.com/CloakHQ/CloakBrowser |
 
 Frecency algorithm adapted from [zoxide](https://github.com/ajeetdsouza/zoxide).
@@ -78,13 +78,29 @@ missing: <tool>. run: F -s
 
 Then exits. Auto-running setup silently hides failures and wastes time. Explicit is better.
 
-### CloakBrowser is opt-in via `F -s cloak-browser`
+### Heavy opt-ins: docling and CloakBrowser
 
-The binary is large. Most users never need it. `F -s` installs the four core tools only. `F -s cloak-browser` adds bypass capability. When a site blocks a request, F prints:
+Some capabilities require large downloads and are not installed by `F -s`. Both follow the same pattern: install once when needed, visible output so you see progress.
 
+**Document parsing** (PDF, DOCX, PPTX, XLSX, EPUB):
+```sh
+F -s docling
+```
+When a doc file is passed without docling installed, F prints:
+```
+missing: docling not installed. run: F -s docling
+```
+
+**Bypass blocked sites** (stealth browser):
+```sh
+F -s cloak-browser
+```
+When a site blocks the request, F prints:
 ```
 blocked. `F -s cloak-browser` to bypass
 ```
+
+Both are excluded from `F -s` because they are large, slow to install, and most users never need them. The install hint is surfaced exactly when needed.
 
 ### Frecency algorithm (from zoxide)
 

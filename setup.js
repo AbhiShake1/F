@@ -3,26 +3,36 @@ import { existsSync } from 'node:fs'
 import { join } from 'node:path'
 import { homedir } from 'node:os'
 
-export async function setup(installCloak = false) {
+function pip(args, opts = {}) {
+  // try pip3 first, fall back to pip
+  for (const cmd of ['pip3', 'pip']) {
+    const r = spawnSync(cmd, args, { ...opts, encoding: 'utf8' })
+    if (!r.error) return r
+  }
+}
+
+export async function setup({ cloak = false, docling = false } = {}) {
   const fDir = join(homedir(), '.F')
 
-  if (installCloak) {
-    // Install npm packages locally to ~/.F/ so cloak_fetch.js can resolve them
+  if (cloak) {
     spawnSync('npm', ['install', '--prefix', fDir,
       'playwright-extra', 'puppeteer-extra-plugin-stealth', 'turndown'
     ], { stdio: 'pipe' })
-    // Download stealth Chromium binary — large, show progress
     const playwrightBin = join(fDir, 'node_modules', '.bin', 'playwright')
     spawnSync('node', [playwrightBin, 'install', 'chromium'], { stdio: 'inherit' })
     return
   }
 
-  // Silent installs — suppress output to keep AI context clean
+  if (docling) {
+    pip(['install', 'docling'], { stdio: 'inherit' })
+    return
+  }
+
+  // Core: silent installs
   for (const [cmd, args] of [
     ['npm', ['install', '-g', 'curl.md']],
     ['brew', ['install', 'rtk']],
     ['brew', ['install', 'ripgrep']],
-    ['pip', ['install', 'docling']],
   ]) {
     spawnSync(cmd, args, { stdio: 'pipe' })
   }
