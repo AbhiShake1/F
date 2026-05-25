@@ -8,11 +8,7 @@ export async function setup({ cloak = false } = {}) {
   const fDir = join(homedir(), '.F')
 
   if (cloak) {
-    spawnSync('npm', ['install', '--prefix', fDir,
-      'playwright-extra', 'puppeteer-extra-plugin-stealth', 'turndown'
-    ], { stdio: 'pipe' })
-    const playwrightBin = join(fDir, 'node_modules', '.bin', 'playwright')
-    spawnSync('node', [playwrightBin, 'install', 'chromium'], { stdio: 'inherit' })
+    spawnSync('npm', ['install', '--prefix', fDir, 'cloakbrowser', 'turndown'], { stdio: 'inherit' })
     return
   }
 
@@ -33,6 +29,6 @@ export function isCloakAvailable() {
   const fDir = join(homedir(), '.F')
   return (
     existsSync(join(fDir, 'src', 'cloak_fetch.js')) &&
-    existsSync(join(fDir, 'node_modules', 'playwright-extra'))
+    existsSync(join(fDir, 'node_modules', 'cloakbrowser'))
   )
 }

@@ -52,7 +52,7 @@ function isCloakAvailable() {
   const fDir = join(homedir(), '.F')
   return (
     existsSync(join(fDir, 'src', 'cloak_fetch.js')) &&
-    existsSync(join(fDir, 'node_modules', 'playwright-extra'))
+    existsSync(join(fDir, 'node_modules', 'cloakbrowser'))
   )
 }
 
