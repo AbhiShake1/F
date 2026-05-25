@@ -8,7 +8,9 @@ export async function setup({ cloak = false } = {}) {
   const fDir = join(homedir(), '.F')
 
   if (cloak) {
-    spawnSync('npm', ['install', '--prefix', fDir, 'cloakbrowser', 'turndown'], { stdio: 'inherit' })
+    spawnSync('npm', ['install', '--prefix', fDir, 'cloakbrowser', 'turndown'], { stdio: 'pipe' })
+    const bin = join(fDir, 'node_modules', '.bin', 'cloakbrowser')
+    spawnSync(bin, ['install'], { stdio: 'inherit' })
     return
   }
 
