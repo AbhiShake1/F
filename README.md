@@ -6,7 +6,7 @@ Universal fetch/find/search for AI agents and humans. No flags. Token-efficient 
 
 ## What it does
 
-`F <anything>` — URL, file, or string. F routes by argument shape and returns what you need.
+`F [file|url|string ...]` — F routes each argument by shape and returns what you need.
 
 - URL → fetched as markdown
 - File path → read (any format)
@@ -117,7 +117,7 @@ Detection runs in this order:
 ## Usage
 
 ```
-F <file|url|string>
+F [file|url|string ...]
 ```
 
 ```bash
@@ -128,6 +128,8 @@ F report.pdf           # parse and read document
 F data.xlsx            # spreadsheet → markdown table
 F notebook.ipynb       # Jupyter notebook → markdown
 F "auth middleware"    # search across all files
+F index.ts fetch.js    # read multiple files
+F README.md github.com/user/repo  # mix files and URLs
 ```
 
 ## Blocked sites
