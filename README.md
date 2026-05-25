@@ -45,6 +45,7 @@ Windows: `irm https://raw.githubusercontent.com/AbhiShake1/F/main/uninstall.ps1 
 | curl.md | URL → markdown | https://github.com/wevm/curl.md |
 | RTK | Output compression | https://github.com/rtk-ai/rtk |
 | ripgrep | File content + filename search | https://github.com/BurntSushi/ripgrep |
+| pdf-to-markdown | PDF → markdown | https://www.npmjs.com/package/@pspdfkit/pdf-to-markdown |
 | pandoc | DOCX, PPTX, EPUB, ODT → markdown | https://github.com/jgm/pandoc |
 | CloakBrowser | Bypass blocked sites (opt-in) | https://github.com/CloakHQ/CloakBrowser |
 
