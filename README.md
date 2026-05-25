@@ -82,7 +82,7 @@ Then exits. Auto-running setup silently hides failures and wastes time. Explicit
 
 ### Heavy opt-ins: CloakBrowser
 
-**pandoc is a core dependency** — installed by `F -s` alongside ripgrep and curl.md. It handles DOCX, PPTX, EPUB, ODT, RTF → markdown with no extra steps. SheetJS (also installed by `F -s`) handles XLSX, XLS, ODS → markdown tables. Jupyter notebooks (`.ipynb`) are parsed natively with no external tool.
+**pandoc is a core dependency** — installed by `F -s` alongside ripgrep and curl.md. It handles DOCX, PPTX, EPUB, ODT, RTF → markdown with no extra steps. SheetJS (also installed by `F -s`) handles XLSX, XLS, ODS → markdown tables. Jupyter notebooks (`.ipynb`), ZIP/tar archives, and SQLite databases are handled natively with no external tools — all rely on macOS/Linux built-ins (`unzip`, `tar`, `sqlite3`).
 
 Some capabilities require large downloads and are not installed by `F -s`.
 
@@ -127,6 +127,9 @@ F getUserById          # search file contents
 F report.pdf           # parse and read document
 F data.xlsx            # spreadsheet → markdown table
 F notebook.ipynb       # Jupyter notebook → markdown
+F archive.zip          # list archive contents
+F archive.tar.gz       # list archive contents
+F app.db               # SQLite schema + sample rows
 F "auth middleware"    # search across all files
 F index.ts fetch.js    # read multiple files
 F README.md github.com/user/repo  # mix files and URLs
