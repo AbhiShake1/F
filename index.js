@@ -8,37 +8,32 @@ import { setup } from './setup.js'
 const args = process.argv.slice(2)
 
 if (args.length === 0) {
-  process.stdout.write('F <file|url|string>\n')
+  process.stdout.write('F <file|url|string> [file|url|string ...]\n')
   process.exit(0)
 }
 
-const arg = args[0]
+async function processArg(arg) {
+  const detected = detect(arg)
+  if (detected.type === 'url') return fetchUrl(detected.value)
+  if (detected.type === 'exact-path' || detected.type === 'fuzzy') return readFile(detected.value)
+  return searchContent(detected.value)
+}
 
 async function main() {
   try {
-    // setup commands
-    if (arg === '-s') {
+    if (args[0] === '-s') {
       await setup({ cloak: args[1] === 'cloak-browser' })
       return
     }
 
-    // Detect and route
-    const detected = detect(arg)
-    let result
-
-    if (detected.type === 'url') {
-      result = await fetchUrl(detected.value)
-    } else if (detected.type === 'exact-path' || detected.type === 'fuzzy') {
-      result = readFile(detected.value)
-    } else {
-      // content search
-      result = searchContent(detected.value)
-    }
-
-    if (result) {
+    const multi = args.length > 1
+    for (const arg of args) {
+      const result = await processArg(arg)
+      if (!result) continue
+      if (multi) process.stdout.write(`\n<source: ${arg}>\n`)
       process.stdout.write(result)
-      // Ensure trailing newline
       if (!result.endsWith('\n')) process.stdout.write('\n')
+      if (multi) process.stdout.write(`</source>\n`)
     }
   } catch (err) {
     const msg = err && err.message ? err.message : String(err)
@@ -47,7 +42,6 @@ async function main() {
     } else if (msg.startsWith('missing:')) {
       process.stderr.write(msg + '\n')
     } else {
-      // Compress upstream errors to bare minimum: strip "Upstream returned", lowercase
       const short = msg.replace(/upstream returned\s*/i, '').trim().toLowerCase()
       process.stderr.write(short + '\n')
     }
