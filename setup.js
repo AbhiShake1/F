@@ -4,7 +4,7 @@ import { join } from 'node:path'
 import { homedir } from 'node:os'
 
 
-export async function setup({ cloak = false, docling = false } = {}) {
+export async function setup({ cloak = false } = {}) {
   const fDir = join(homedir(), '.F')
 
   if (cloak) {
@@ -13,14 +13,6 @@ export async function setup({ cloak = false, docling = false } = {}) {
     ], { stdio: 'pipe' })
     const playwrightBin = join(fDir, 'node_modules', '.bin', 'playwright')
     spawnSync('node', [playwrightBin, 'install', 'chromium'], { stdio: 'inherit' })
-    return
-  }
-
-  if (docling) {
-    // pipx handles PEP 668 (Homebrew Python blocks system-wide pip)
-    const hasPipx = spawnSync('which', ['pipx'], { encoding: 'utf8' }).status === 0
-    if (!hasPipx) spawnSync('brew', ['install', 'pipx'], { stdio: 'inherit' })
-    spawnSync('pipx', ['install', 'docling', '--include-deps'], { stdio: 'inherit' })
     return
   }
 

@@ -24,7 +24,7 @@ function readPdf(absPath) {
     const r = spawnSync(bin, [absPath], { encoding: 'utf8', maxBuffer: 20 * 1024 * 1024 })
     if (r.status === 0 && r.stdout) return r.stdout
   }
-  return readWithDocling(absPath)
+  throw new Error('missing: pdf-to-markdown not installed. run: F -s')
 }
 
 function readWithPandoc(absPath) {
@@ -34,18 +34,7 @@ function readWithPandoc(absPath) {
     encoding: 'utf8', maxBuffer: 10 * 1024 * 1024
   })
   if (r.error) throw new Error('missing: pandoc not installed. run: F -s')
-  if (r.status !== 0) return readWithDocling(absPath)
-  return r.stdout || ''
-}
-
-function readWithDocling(absPath) {
-  const r = spawnSync('docling', [absPath, '--to', 'markdown'], {
-    encoding: 'utf8', maxBuffer: 10 * 1024 * 1024
-  })
-  if (r.error && r.error.code === 'ENOENT') {
-    throw new Error('missing: docling not installed. run: F -s docling')
-  }
-  if (r.error) throw r.error
+  if (r.status !== 0) throw new Error('pandoc failed')
   return r.stdout || ''
 }
 
@@ -62,8 +51,7 @@ export function readFile(filePath) {
   } else if (PANDOC_TYPES.has(ext)) {
     content = readWithPandoc(absPath)
   } else if (ext === '.xlsx') {
-    // pandoc doesn't handle xlsx — fall through to docling
-    content = readWithDocling(absPath)
+    throw new Error('xlsx not supported. convert to csv or pdf first')
   } else {
     if (isRtkAvailable()) {
       const r = spawnSync('rtk', ['read', absPath], { encoding: 'utf8', maxBuffer: 10 * 1024 * 1024 })

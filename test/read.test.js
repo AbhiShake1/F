@@ -135,7 +135,7 @@ describe('readFile: error handling', () => {
 
 // ---------- Document extension handling ----------
 describe('readFile: document extensions (missing tool errors)', () => {
-  test('.pdf → throws "missing: docling" if neither pdf-to-markdown nor docling installed', () => {
+  test('.pdf → throws "missing: pdf-to-markdown" if pdf-to-markdown not installed', () => {
     const savedPath = process.env.PATH
     process.env.PATH = '/nonexistent'
     try {
@@ -146,7 +146,7 @@ describe('readFile: document extensions (missing tool errors)', () => {
         (err) => {
           assert.ok(err instanceof Error)
           assert.ok(err.message.startsWith('missing:'), `expected missing: prefix, got: ${err.message}`)
-          assert.ok(err.message.includes('docling'), `expected "docling" in message, got: ${err.message}`)
+          assert.ok(err.message.includes('pdf-to-markdown'), `expected "pdf-to-markdown" in message, got: ${err.message}`)
           return true
         }
       )
@@ -324,77 +324,6 @@ describe('readFile: pdf-to-markdown path', () => {
       assert.ok(content.includes('# PDF Content'), `expected "# PDF Content", got: ${content}`)
     } finally {
       removeFakePdfToMd()
-    }
-  })
-})
-
-// ---------- docling fallback ----------
-describe('readFile: docling fallback', () => {
-  function installFakeDocling(output, exitCode = 0) {
-    const script = join(fakeBinDir, 'docling')
-    writeFileSync(script, [
-      '#!/bin/sh',
-      `printf '%s' '${output.replace(/'/g, "'\\''")}'`,
-      `exit ${exitCode}`,
-    ].join('\n'))
-    chmodSync(script, 0o755)
-  }
-
-  function removeFakeDocling() {
-    try { rmSync(join(fakeBinDir, 'docling')) } catch {}
-  }
-
-  function removeFakePdfToMd() {
-    try { rmSync(join(fakeBinDir, 'pdf-to-markdown')) } catch {}
-  }
-
-  test('.pdf falls back to docling when pdf-to-markdown not found', () => {
-    removeFakePdfToMd()
-    installFakeDocling('# Docling Output')
-    try {
-      const savedPath = process.env.PATH
-      // Remove pdf-to-markdown from PATH entirely by using a dir without it
-      const noPdfBinDir = mkdtempSync(join(tmpdir(), 'F-nopdf-'))
-      // Copy docling into noPdfBinDir
-      const doclingScript = join(noPdfBinDir, 'docling')
-      writeFileSync(doclingScript, [
-        '#!/bin/sh',
-        `printf '%s' '# Docling Output'`,
-        'exit 0',
-      ].join('\n'))
-      chmodSync(doclingScript, 0o755)
-      process.env.PATH = noPdfBinDir + ':' + origReadPath
-
-      const file = join(tempDir, 'fallback.pdf')
-      writeFileSync(file, Buffer.from('%PDF-1.4\n%%EOF\n'))
-      const content = readFile(file)
-      assert.ok(content.includes('# Docling Output'), `expected docling output, got: ${content}`)
-
-      process.env.PATH = savedPath
-      rmSync(noPdfBinDir, { recursive: true, force: true })
-    } finally {
-      removeFakeDocling()
-    }
-  })
-
-  test('.pdf throws missing: docling when both pdf-to-markdown and docling absent', () => {
-    removeFakePdfToMd()
-    removeFakeDocling()
-    const savedPath = process.env.PATH
-    process.env.PATH = '/nonexistent'
-    try {
-      const file = join(tempDir, 'nodocker.pdf')
-      writeFileSync(file, Buffer.from('%PDF-1.4\n%%EOF\n'))
-      assert.throws(
-        () => readFile(file),
-        err => {
-          assert.ok(err.message.startsWith('missing:'), `got: ${err.message}`)
-          assert.ok(err.message.includes('docling'), `got: ${err.message}`)
-          return true
-        }
-      )
-    } finally {
-      process.env.PATH = savedPath
     }
   })
 })

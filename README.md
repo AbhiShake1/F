@@ -46,7 +46,6 @@ Windows: `irm https://raw.githubusercontent.com/AbhiShake1/F/main/uninstall.ps1 
 | RTK | Output compression | https://github.com/rtk-ai/rtk |
 | ripgrep | File content + filename search | https://github.com/BurntSushi/ripgrep |
 | pandoc | DOCX, PPTX, EPUB, ODT → markdown | https://github.com/jgm/pandoc |
-| docling | Document parsing — PDF, DOCX, etc. (opt-in) | https://github.com/docling-project/docling |
 | CloakBrowser | Bypass blocked sites (opt-in) | https://github.com/CloakHQ/CloakBrowser |
 
 Frecency algorithm adapted from [zoxide](https://github.com/ajeetdsouza/zoxide).
@@ -79,20 +78,11 @@ missing: <tool>. run: F -s
 
 Then exits. Auto-running setup silently hides failures and wastes time. Explicit is better.
 
-### Heavy opt-ins: docling and CloakBrowser
+### Heavy opt-ins: CloakBrowser
 
 **pandoc is a core dependency** — installed by `F -s` alongside ripgrep and curl.md. It handles DOCX, PPTX, EPUB, ODT → markdown with no extra steps.
 
-Some capabilities require large downloads and are not installed by `F -s`. Both follow the same pattern: install once when needed, visible output so you see progress.
-
-**Document parsing fallback** (PDF, XLSX, and pandoc failures):
-```sh
-F -s docling
-```
-When a doc file requires docling and it is not installed, F prints:
-```
-missing: docling not installed. run: F -s docling
-```
+Some capabilities require large downloads and are not installed by `F -s`.
 
 **Bypass blocked sites** (stealth browser):
 ```sh
@@ -103,7 +93,7 @@ When a site blocks the request, F prints:
 blocked. `F -s cloak-browser` to bypass
 ```
 
-Both are excluded from `F -s` because they are large, slow to install, and most users never need them. The install hint is surfaced exactly when needed.
+CloakBrowser is excluded from `F -s` because it is large, slow to install, and most users never need it. The install hint is surfaced exactly when needed.
 
 ### Frecency algorithm (from zoxide)
 
