@@ -46,7 +46,8 @@ Windows: `irm https://raw.githubusercontent.com/AbhiShake1/F/main/uninstall.ps1 
 | RTK | Output compression | https://github.com/rtk-ai/rtk |
 | ripgrep | File content + filename search | https://github.com/BurntSushi/ripgrep |
 | pdf-to-markdown | PDF → markdown | https://www.npmjs.com/package/@pspdfkit/pdf-to-markdown |
-| pandoc | DOCX, PPTX, EPUB, ODT → markdown | https://github.com/jgm/pandoc |
+| pandoc | DOCX, PPTX, EPUB, ODT, RTF → markdown | https://github.com/jgm/pandoc |
+| SheetJS | XLSX, XLS, ODS → markdown tables | https://sheetjs.com |
 | CloakBrowser | Bypass blocked sites (opt-in) | https://github.com/CloakHQ/CloakBrowser |
 
 Frecency algorithm adapted from [zoxide](https://github.com/ajeetdsouza/zoxide).
@@ -81,7 +82,7 @@ Then exits. Auto-running setup silently hides failures and wastes time. Explicit
 
 ### Heavy opt-ins: CloakBrowser
 
-**pandoc is a core dependency** — installed by `F -s` alongside ripgrep and curl.md. It handles DOCX, PPTX, EPUB, ODT → markdown with no extra steps.
+**pandoc is a core dependency** — installed by `F -s` alongside ripgrep and curl.md. It handles DOCX, PPTX, EPUB, ODT, RTF → markdown with no extra steps. SheetJS (also installed by `F -s`) handles XLSX, XLS, ODS → markdown tables. Jupyter notebooks (`.ipynb`) are parsed natively with no external tool.
 
 Some capabilities require large downloads and are not installed by `F -s`.
 
@@ -124,6 +125,8 @@ F youtube.com          # fetch as markdown
 F index.ts             # read file
 F getUserById          # search file contents
 F report.pdf           # parse and read document
+F data.xlsx            # spreadsheet → markdown table
+F notebook.ipynb       # Jupyter notebook → markdown
 F "auth middleware"    # search across all files
 ```
 
