@@ -6,7 +6,7 @@ Universal fetch/find/search for AI agents and humans. No flags. Token-efficient 
 
 ## What it does
 
-`F [file|url|string ...]` — F routes each argument by shape and returns what you need.
+`F [file,url,string ...]` — F routes each argument by shape and returns what you need.
 
 - URL → fetched as markdown
 - File path → read (any format)
@@ -117,7 +117,7 @@ Detection runs in this order:
 ## Usage
 
 ```
-F [file|url|string ...]
+F [file,url,string ...]
 ```
 
 ```bash
@@ -146,6 +146,10 @@ blocked. `F -s cloak-browser` to bypass
 ```
 
 Install CloakBrowser once with `F -s cloak-browser` and F will use it automatically on blocked sites.
+
+## Design decisions
+
+**Comma over pipe in usage syntax** (`[file,url,string ...]` not `[file|url|string ...]`): `file|url|string` = 4 tokens, `file,url,string` = 3 tokens. 1 token saved per occurrence — across 1300 conversations × 50 tool calls each, that's ~65k tokens saved.
 
 ## Development
 
