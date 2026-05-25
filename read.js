@@ -10,6 +10,7 @@ const _require = createRequire(import.meta.url)
 const PANDOC_TYPES = new Set(['.docx', '.pptx', '.epub', '.odt', '.html', '.htm', '.rtf'])
 const SPREADSHEET_TYPES = new Set(['.xlsx', '.xls', '.ods'])
 const SQLITE_TYPES = new Set(['.sqlite', '.db', '.sqlite3'])
+const MAN_EXTS = new Set(['.1','.2','.3','.4','.5','.6','.7','.8','.9'])
 
 function isTarArchive(absPath) {
   const b = path.basename(absPath).toLowerCase()
@@ -135,6 +136,22 @@ function readSqlite(absPath) {
   }).join('\n\n')
 }
 
+function readPlist(absPath) {
+  const r = spawnSync('plutil', ['-p', absPath], { encoding: 'utf8', maxBuffer: 5 * 1024 * 1024 })
+  if (r.status !== 0) throw new Error('plutil failed: ' + (r.stderr || ''))
+  return '```\n' + r.stdout.trim() + '\n```'
+}
+
+function readMan(absPath) {
+  // mandoc (macOS), groff (Linux) — both output overstrike-encoded text
+  let r = spawnSync('mandoc', ['-T', 'utf8', absPath], { encoding: 'utf8', maxBuffer: 5 * 1024 * 1024 })
+  if (r.status !== 0 || !r.stdout) {
+    r = spawnSync('groff', ['-man', '-Tascii', absPath], { encoding: 'utf8', maxBuffer: 5 * 1024 * 1024 })
+  }
+  if (r.status !== 0 || !r.stdout) throw new Error('man page rendering failed: no mandoc or groff found')
+  return r.stdout.replace(/.\x08/g, '').trim()
+}
+
 function readWithPandoc(absPath) {
   const bin = findBin('pandoc')
   if (!bin) throw new Error('missing: pandoc not installed. run: F -s')
@@ -166,6 +183,10 @@ export function readFile(filePath) {
     content = readArchive(absPath)
   } else if (SQLITE_TYPES.has(ext)) {
     content = readSqlite(absPath)
+  } else if (ext === '.plist') {
+    content = readPlist(absPath)
+  } else if (MAN_EXTS.has(ext)) {
+    content = readMan(absPath)
   } else {
     if (isRtkAvailable()) {
       const r = spawnSync('rtk', ['read', absPath], { encoding: 'utf8', maxBuffer: 10 * 1024 * 1024 })
